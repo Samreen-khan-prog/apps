@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sticky Note Task Manager</title>
+  <style>
+    /* Sticky note styles */
+    .sticky-note {
+      position: relative;
+      display: inline-block;
+      padding: 20px;
+      margin: 20px;
+      border-radius: 15px;
+      box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+      font-size: 18px;
+      font-weight: bold;
+      cursor: text;
+      width: 250px;
+      height: 200px;
+      background: #FFF;
+      border: 1px solid #E0E0E0;
+      overflow: hidden;
+    }
+    
+    /* Sticky note colors */
+    .type-red { background-color: #FF8A80; border-color: #FF7043; }
+    .type-blue { background-color: #82B1FF; border-color: #448AFF; }
+    .type-green { background-color: #B9F6CA; border-color: #00E676; }
+    .type-yellow { background-color: #FFFF8D; border-color: #FFD740; }
+    /* Add more colors and types as needed */
+    
+    /* Paper tear effect */
+    .sticky-note::before {
+      content: "";
+      position: absolute;
+      top: -10px;
+      right: 0;
+      border-style: solid;
+      border-width: 0 12px 12px 0;
+      border-color: transparent #FFF;
+    }
+    
+    /* Rotation effect */
+    .sticky-note:hover {
+      transform: rotate(-2deg);
+      transition: transform 0.3s ease-in-out;
+    }
+  </style>
+  <script>
+    // Array of available colors
+    var colors = ['type-red', 'type-blue', 'type-green', 'type-yellow']; // Add more colors if needed
+    var colorIndex = 0;
+
+    // Function to create a new sticky note element
+    function createStickyNoteElement(taskText, colorClass) {
+      var note = document.createElement("div");
+      note.textContent = taskText;
+      note.className = "sticky-note " + colorClass;
+      
+      // Add event listener for editing
+      note.addEventListener("click", function() {
+        editTask(note);
+      });
+
+      return note;
+    }
+
+    // Function to edit task inline
+    function editTask(note) {
+      note.contentEditable = true;
+      note.focus();
+      note.addEventListener("blur", function() {
+        note.contentEditable = false;
+        // Perform actions to update task (e.g., send to backend)
+        // Replace this with your logic for updating tasks
+      });
+    }
+
+    // Function to add a new task with selected color
+    function addTaskWithColor() {
+      var taskInput = document.getElementById("newTask");
+      var taskText = taskInput.value.trim();
+      var selectedColor = document.querySelector('input[name="color"]:checked');
+
+      if (taskText !== "") {
+        var taskList = document.getElementById("taskList");
+        var note = createStickyNoteElement(taskText, selectedColor.value);
+        taskList.appendChild(note);
+        colorIndex = (colorIndex + 1) % colors.length;
+        taskInput.value = ""; // Clear the input field after adding the task
+      }
+    }
+  </script>
+</head>
+<body>
+  <h1>Sticky Note Task Manager</h1>
+  
+  <input type="text" id="newTask" placeholder="Enter task">
+  <label for="red">Red</label>
+  <input type="radio" name="color" id="red" value="type-red" checked>
+  <label for="blue">Blue</label>
+  <input type="radio" name="color" id="blue" value="type-blue">
+  <label for="green">Green</label>
+  <input type="radio" name="color" id="green" value="type-green">
+  <label for="yellow">Yellow</label>
+  <input type="radio" name="color" id="yellow" value="type-yellow">
+  <!-- Add more color options as needed -->
+  <button onclick="addTaskWithColor()">Add Task</button>
+  
+  <div id="taskList">
+    <!-- Display tasks here -->
+  </div>
+</body>
+</html>
